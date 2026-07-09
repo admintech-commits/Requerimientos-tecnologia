@@ -1,0 +1,210 @@
+/* ============================================================
+   LoginPage — mobile-first
+   Móvil: columna única (cabecera de marca + formulario)
+   ≥ 900px: dos paneles lado a lado
+   ============================================================ */
+
+.login {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* ---------- Panel de marca (oscuro, estilo grupo American Visa) ---------- */
+.login__brand {
+  position: relative;
+  background:
+    radial-gradient(ellipse at 20% 15%, rgba(233, 179, 73, 0.12), transparent 55%),
+    radial-gradient(ellipse at 85% 90%, rgba(240, 138, 75, 0.10), transparent 55%),
+    linear-gradient(160deg, var(--color-coal-2), var(--color-coal));
+  padding: var(--space-6) var(--space-5) var(--space-5);
+}
+
+.login__brand-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.login__logos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.login__logo {
+  height: auto;
+}
+
+.login__logo--av {
+  width: min(240px, 60vw);
+}
+
+.login__logo--ti {
+  width: min(210px, 52vw);
+}
+
+.login__divider {
+  width: 56px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--gradient-brand);
+}
+
+.login__tagline {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-on-coal-soft);
+  max-width: 34ch;
+}
+
+.login__tagline strong {
+  color: var(--color-on-coal);
+  font-weight: 600;
+}
+
+.login__brand-accent {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: var(--gradient-brand);
+}
+
+/* ---------- Panel del formulario ---------- */
+.login__panel {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-5);
+}
+
+.login__card {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.login__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.login__title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.login__subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+/* ---------- Formulario ---------- */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.login-form__alert {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(192, 57, 43, 0.25);
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  font-size: var(--text-sm);
+}
+
+.login-form__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.login-form__remember {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.login-form__remember input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-orange);
+}
+
+.login-form__link {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.login__footer {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+/* ---------- Escritorio / tablet horizontal ---------- */
+@media (min-width: 900px) {
+  .login {
+    flex-direction: row;
+  }
+
+  .login__brand {
+    flex: 1 1 52%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-7);
+  }
+
+  .login__brand-inner {
+    gap: var(--space-6);
+  }
+
+  .login__logo--av {
+    width: 300px;
+  }
+
+  .login__logo--ti {
+    width: 260px;
+  }
+
+  .login__tagline {
+    font-size: var(--text-md);
+  }
+
+  .login__brand-accent {
+    inset: 0 0 0 auto;
+    width: 4px;
+    height: auto;
+  }
+
+  .login__panel {
+    flex: 1 1 48%;
+    align-items: center;
+    background: var(--color-canvas); /* marfil */
+  }
+
+  .login__card {
+    padding: var(--space-6);
+  }
+}

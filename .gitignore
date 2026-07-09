@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+dist/
+.env
+.env.local
+*.log
+# Datos locales: base SQLite y adjuntos — nunca versionar
+american-vida-taxi-imperial/server/data/

@@ -1,0 +1,59 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge--status-creado {
+  background: #eef0f4;
+  color: #4a5065;
+}
+
+.badge--status-en_revision {
+  background: #fdf3d8;
+  color: #8a6410;
+}
+
+.badge--status-aprobado {
+  background: #e3f2e8;
+  color: #1e6b3a;
+}
+
+.badge--status-en_desarrollo {
+  background: #e3ecfa;
+  color: #1f4e96;
+}
+
+.badge--status-en_pruebas {
+  background: #f0e6fa;
+  color: #6a3aa0;
+}
+
+.badge--status-finalizado {
+  background: #dff3ef;
+  color: #0f6a5c;
+}
+
+.badge--status-rechazado {
+  background: #fdeceb;
+  color: #a63125;
+}
+
+.badge--priority-alta {
+  background: #fdeceb;
+  color: #a63125;
+}
+
+.badge--priority-media {
+  background: #fdf3d8;
+  color: #8a6410;
+}
+
+.badge--priority-baja {
+  background: #eef0f4;
+  color: #4a5065;
+}

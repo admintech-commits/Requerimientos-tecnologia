@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  requerimientos-tecnologia:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: requerimientos-tecnologia:latest
+    container_name: requerimientos-tecnologia
+    restart: unless-stopped
+
+    ports:
+      # Solo expuesto en localhost; nginx hace el proxy hacia el exterior
+      - "127.0.0.1:3002:3000"
+
+    volumes:
+      # Bind-mount para SQLite y archivos adjuntos — persistencia entre reinicios
+      - ./data:/app/data
+
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_PATH: /app/data/requerimientos.db
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,126 @@
+.list__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.list__header h1 {
+  font-size: var(--text-xl);
+}
+
+.list__cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--gradient-brand);
+  color: #fff;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  box-shadow: var(--shadow-btn);
+}
+
+.list__cta:hover {
+  text-decoration: none;
+}
+
+.list__filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.list__filters input,
+.list__filters select {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+}
+
+.list__filters input:focus,
+.list__filters select:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 4px var(--color-focus);
+}
+
+.list__table-wrap {
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+}
+
+.list__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  min-width: 720px;
+}
+
+.list__table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.list__table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+  vertical-align: top;
+}
+
+.list__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.list__table tbody tr:hover {
+  background: var(--color-canvas);
+}
+
+.list__title {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.list__title:hover {
+  color: var(--color-orange-dark);
+}
+
+.list__meta {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.list__empty,
+.list__error {
+  color: var(--color-muted);
+  padding: var(--space-5) 0;
+}
+
+.list__error {
+  color: var(--color-error);
+}
+
+@media (max-width: 720px) {
+  .list__filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .list__filters input {
+    grid-column: 1 / -1;
+  }
+}

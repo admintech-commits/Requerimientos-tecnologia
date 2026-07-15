@@ -106,6 +106,7 @@ export default function DashboardPage() {
                   <th>Fecha creación</th>
                   <th>Título</th>
                   <th>Área</th>
+                  <th>Responsable</th>
                   <th>Prioridad</th>
                   <th>Estado</th>
                   <th>Días abierto</th>
@@ -122,6 +123,9 @@ export default function DashboardPage() {
                       </Link>
                     </td>
                     <td className="dash__req-area">{req.area}</td>
+                    <td className="dash__req-assignee">
+                      {req.assignedToName ?? (req.assignedExternal ? `${req.assignedExternal} (ext.)` : <span className="dash__req-unassigned">Sin asignar</span>)}
+                    </td>
                     <td><PriorityBadge priority={req.priority} /></td>
                     <td><StatusBadge status={req.status} /></td>
                     <td className="dash__req-days">{diasAbierto(req)}</td>

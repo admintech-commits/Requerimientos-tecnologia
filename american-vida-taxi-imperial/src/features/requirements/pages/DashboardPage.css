@@ -194,6 +194,16 @@
   white-space: nowrap;
 }
 
+.dash__req-assignee {
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+
+.dash__req-unassigned {
+  color: var(--color-muted);
+  font-style: italic;
+}
+
 .dash__req-days {
   white-space: nowrap;
   font-weight: 600;

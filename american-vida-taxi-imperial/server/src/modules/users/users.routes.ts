@@ -62,7 +62,7 @@ usersRouter.post('/', requireRole('aprobador'), (req, res, next) => {
       throw new HttpError(400, 'El nombre debe tener al menos 3 caracteres');
     }
     if (role !== 'empleado' && role !== 'aprobador' && role !== 'gestor') {
-      throw new HttpError(400, 'El rol debe ser empleado, gestor o aprobador');
+      throw new HttpError(400, 'El rol debe ser empleado, gestor o administrador');
     }
 
     const exists = db.prepare('SELECT id FROM users WHERE email = ?').get(cleanEmail);

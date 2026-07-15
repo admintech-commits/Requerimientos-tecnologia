@@ -12,6 +12,12 @@ COPY index.html vite.config.ts tsconfig.json ./
 COPY public ./public
 COPY src ./src
 
+# Variables de build del frontend (se sobreescriben con --build-arg en docker-compose)
+ARG VITE_BASE_URL=/requerimientos/
+ARG VITE_API_URL=/requerimientos/api
+ENV VITE_BASE_URL=$VITE_BASE_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN npm run build
 # Resultado: /build/dist/
 

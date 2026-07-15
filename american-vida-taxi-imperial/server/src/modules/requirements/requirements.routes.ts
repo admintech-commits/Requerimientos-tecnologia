@@ -62,6 +62,28 @@ requirementsRouter.patch('/:id/assign', requireRole('aprobador', 'gestor'), (req
   }
 });
 
+// Agregar adjunto a requerimiento existente — cualquier usuario autenticado
+requirementsRouter.post('/:id/attachments', (req: AuthRequest, res, next) => {
+  try {
+    const { url } = req.body as { url?: string };
+    const requirement = service.addAttachment(Number(req.params.id), url ?? '', req.user!);
+    res.status(201).json(requirement);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Comentario libre — cualquier usuario autenticado
+requirementsRouter.post('/:id/comments', (req: AuthRequest, res, next) => {
+  try {
+    const { comment } = req.body as { comment?: string };
+    service.addComment(Number(req.params.id), comment ?? '', req.user!);
+    res.status(201).json({ ok: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Cambio de estado — aprobadores y gestores (validación y gestión)
 requirementsRouter.patch('/:id/status', requireRole('aprobador', 'gestor'), (req: AuthRequest, res, next) => {
   try {

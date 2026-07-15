@@ -35,6 +35,18 @@ export function changeStatus(
   return api.patch<Requirement>(`/requirements/${id}/status`, { status, comment });
 }
 
+export async function uploadAttachmentToRequirement(
+  id: number,
+  file: File,
+): Promise<Requirement> {
+  const { url } = await api.upload('/uploads', file);
+  return api.post<Requirement>(`/requirements/${id}/attachments`, { url });
+}
+
+export function addComment(id: number, comment: string): Promise<{ ok: boolean }> {
+  return api.post(`/requirements/${id}/comments`, { comment });
+}
+
 export function getMetrics(): Promise<Metrics> {
   return api.get<Metrics>('/requirements/metrics');
 }

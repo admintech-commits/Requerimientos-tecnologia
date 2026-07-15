@@ -25,7 +25,25 @@ export function createApp() {
   app.use('/api/requirements', requirementsRouter);
   app.use('/api/uploads', uploadsRouter);
   app.use('/api/users', usersRouter);
-  app.use('/api/uploads', express.static(UPLOADS_DIR)); // descarga de adjuntos
+
+  // Descarga de adjuntos: fuerza Content-Disposition para que el navegador
+  // descargue el archivo en lugar de intentar renderizarlo inline.
+  app.use(
+    '/api/uploads',
+    express.static(UPLOADS_DIR, {
+      setHeaders(res, filePath) {
+        const filename = path.basename(filePath);
+        res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(filename)}"`);
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+      },
+    }),
+  );
+
+  // Fallback explícito para /api/uploads: si express.static no encontró el archivo
+  // responde 404 en lugar de caer en el catch-all del SPA (que devolvería index.html).
+  app.get('/api/uploads/:filename', (_req, res) => {
+    res.status(404).json({ message: 'Archivo no encontrado' });
+  });
 
   app.use(errorHandler);
 
@@ -34,7 +52,9 @@ export function createApp() {
   if (process.env.NODE_ENV === 'production') {
     const publicDir = path.join(__dirname, '..', 'public');
     app.use(express.static(publicDir));
-    app.get('*', (_req, res) => {
+    // Catch-all del SPA: solo aplica a rutas que NO sean /api/
+    // Evita que descargas fallidas devuelvan index.html (archivo "dañado")
+    app.get(/^(?!\/api\/).*/, (_req, res) => {
       res.sendFile(path.join(publicDir, 'index.html'));
     });
   }

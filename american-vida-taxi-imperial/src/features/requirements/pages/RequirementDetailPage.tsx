@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '@/features/auth/AuthContext';
 import { canManageRequirements } from '@/features/auth/types';
 import { listUsers, type UserSummary } from '@/features/users/usersService';
-import { assignRequirement, changeStatus, getRequirement } from '../services/requirementsService';
+import { addComment, assignRequirement, changeStatus, getRequirement, uploadAttachmentToRequirement } from '../services/requirementsService';
 import { StatusBadge, PriorityBadge } from '../components/Badges';
 import { resolveApiUrl } from '@/lib/apiClient';
 import { LEVEL_LABELS, STATUS_FLOW, STATUS_LABELS, TRANSITIONS, attachmentLabel } from '../constants';
@@ -16,6 +16,11 @@ export default function RequirementDetailPage() {
   const [requirement, setRequirement] = useState<Requirement | null>(null);
   const [events, setEvents] = useState<RequirementEvent[]>([]);
   const [comment, setComment] = useState('');
+  const [freeComment, setFreeComment] = useState('');
+  const [freeCommentError, setFreeCommentError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [acting, setActing] = useState(false);
   const [team, setTeam] = useState<UserSummary[]>([]);
@@ -72,6 +77,37 @@ export default function RequirementDetailPage() {
       load();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No fue posible asignar el responsable');
+    } finally {
+      setActing(false);
+    }
+  }
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>): Promise<void> {
+    const file = e.target.files?.[0];
+    if (!file || !requirement) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      await uploadAttachmentToRequirement(requirement.id, file);
+      load();
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'No fue posible subir el archivo');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }
+
+  async function handleAddComment(): Promise<void> {
+    if (!requirement || !freeComment.trim()) return;
+    setActing(true);
+    setFreeCommentError(null);
+    try {
+      await addComment(requirement.id, freeComment.trim());
+      setFreeComment('');
+      load();
+    } catch (e) {
+      setFreeCommentError(e instanceof Error ? e.message : 'No fue posible guardar el comentario');
     } finally {
       setActing(false);
     }
@@ -192,24 +228,37 @@ export default function RequirementDetailPage() {
             </div>
           </dl>
 
+          <h2>Adjuntos</h2>
           {requirement.attachments.length > 0 && (
-            <>
-              <h2>Adjuntos</h2>
-              <ul className="detail__attachments">
-                {requirement.attachments.map((a) => (
-                  <li key={a}>
-                    {a.startsWith('http') || a.startsWith('/api/uploads/') ? (
-                      <a href={resolveApiUrl(a)} target="_blank" rel="noreferrer">
-                        {attachmentLabel(a)}
-                      </a>
-                    ) : (
-                      a
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </>
+            <ul className="detail__attachments">
+              {requirement.attachments.map((a) => (
+                <li key={a}>
+                  {a.startsWith('http') || a.startsWith('/api/uploads/') ? (
+                    <a href={resolveApiUrl(a)} target="_blank" rel="noreferrer">
+                      {attachmentLabel(a)}
+                    </a>
+                  ) : (
+                    a
+                  )}
+                </li>
+              ))}
+            </ul>
           )}
+          <div className="detail__upload">
+            <input
+              ref={fileInputRef}
+              type="file"
+              id="detail-file-upload"
+              className="detail__upload-input"
+              onChange={handleFileUpload}
+              disabled={uploading}
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.gif,.txt,.csv,.zip"
+            />
+            <label htmlFor="detail-file-upload" className={`detail__upload-label${uploading ? ' detail__upload-label--loading' : ''}`}>
+              {uploading ? 'Subiendo…' : '+ Subir documento'}
+            </label>
+            {uploadError && <p className="detail__error">{uploadError}</p>}
+          </div>
         </article>
 
         <div className="detail__side">
@@ -296,6 +345,31 @@ export default function RequirementDetailPage() {
               </div>
             </article>
           )}
+
+          <article className="detail__card">
+            <h2>Agregar comentario</h2>
+            <label className="detail__comment">
+              <textarea
+                rows={3}
+                value={freeComment}
+                onChange={(e) => setFreeComment(e.target.value)}
+                placeholder="Escribe una observación o comentario…"
+              />
+            </label>
+            {freeCommentError && (
+              <p className="detail__error" role="alert">{freeCommentError}</p>
+            )}
+            <div className="detail__actions">
+              <button
+                type="button"
+                className="detail__action"
+                disabled={acting || !freeComment.trim()}
+                onClick={handleAddComment}
+              >
+                Comentar
+              </button>
+            </div>
+          </article>
 
           <article className="detail__card">
             <h2>Trazabilidad</h2>

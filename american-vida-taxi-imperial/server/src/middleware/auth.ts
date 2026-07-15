@@ -15,7 +15,7 @@ export function requireAuth(req: AuthRequest, _res: Response, next: NextFunction
     return;
   }
   try {
-    const payload = jwt.verify(header.slice(7), config.jwtSecret) as User & { sub: number };
+    const payload = jwt.verify(header.slice(7), config.jwtSecret) as unknown as User & { sub: number };
     req.user = { id: payload.sub, email: payload.email, name: payload.name, role: payload.role };
     next();
   } catch {

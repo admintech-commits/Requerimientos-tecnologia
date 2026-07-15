@@ -134,6 +134,35 @@ export function changeStatus(
   return repo.findRequirement(id)!;
 }
 
+export function addAttachment(id: number, url: string, user: User): Requirement {
+  if (!url?.trim()) throw new HttpError(400, 'URL de adjunto inválida');
+  const requirement = repo.findRequirement(id);
+  if (!requirement) throw new HttpError(404, 'Requerimiento no encontrado');
+  repo.appendAttachment(id, url.trim());
+  repo.insertEvent({
+    requirementId: id,
+    userId: user.id,
+    fromStatus: requirement.status,
+    toStatus: requirement.status,
+    comment: `Adjunto agregado: ${url.trim().split('/').pop()}`,
+  });
+  return repo.findRequirement(id)!;
+}
+
+export function addComment(id: number, comment: string, user: User): void {
+  const text = comment?.trim();
+  if (!text) throw new HttpError(400, 'El comentario no puede estar vacío');
+  const requirement = repo.findRequirement(id);
+  if (!requirement) throw new HttpError(404, 'Requerimiento no encontrado');
+  repo.insertEvent({
+    requirementId: id,
+    userId: user.id,
+    fromStatus: requirement.status,
+    toStatus: requirement.status,
+    comment: text,
+  });
+}
+
 export function getMetrics(): repo.Metrics {
   return repo.getMetrics();
 }

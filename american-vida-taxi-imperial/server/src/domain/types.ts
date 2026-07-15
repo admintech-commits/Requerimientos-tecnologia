@@ -39,7 +39,8 @@ export const AREAS = [
   'Talento Humano',
   'Comercial',
   'Tecnología',
-  'Gerencia',
+  'Marketing',
+  'Presidencia',
 ] as const;
 export type Area = (typeof AREAS)[number];
 

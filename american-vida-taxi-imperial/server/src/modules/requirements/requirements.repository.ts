@@ -136,6 +136,17 @@ export function insertRequirement(data: CreateRequirementData): Requirement {
   return findRequirement(Number(result.lastInsertRowid))!;
 }
 
+export function appendAttachment(id: number, url: string): void {
+  const row = db.prepare('SELECT attachments FROM requirements WHERE id = ?').get(id) as
+    | { attachments: string }
+    | undefined;
+  if (!row) return;
+  const current = JSON.parse(row.attachments) as string[];
+  db.prepare(
+    `UPDATE requirements SET attachments = ?, updated_at = datetime('now') WHERE id = ?`,
+  ).run(JSON.stringify([...current, url]), id);
+}
+
 export function updateAssignee(
   id: number,
   userId: number | null,

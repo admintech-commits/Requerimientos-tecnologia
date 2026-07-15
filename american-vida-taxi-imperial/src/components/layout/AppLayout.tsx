@@ -1,11 +1,13 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { BRANDS } from '@/config/brands';
 import { useAuth } from '@/features/auth/AuthContext';
+import { useTheme } from '@/features/theme/ThemeContext';
 import { ROLE_LABELS } from '@/features/auth/types';
 import './AppLayout.css';
 
 export default function AppLayout() {
   const { session, signOut } = useAuth();
+  const { theme, toggle } = useTheme();
   const navigate = useNavigate();
 
   function handleSignOut(): void {
@@ -36,6 +38,15 @@ export default function AppLayout() {
             <strong>{session?.user.name}</strong>
             <small>{session ? ROLE_LABELS[session.user.role] : ''}</small>
           </div>
+          <button
+            type="button"
+            className="layout__theme-toggle"
+            onClick={toggle}
+            aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
           <button type="button" className="layout__logout" onClick={handleSignOut}>
             Salir
           </button>

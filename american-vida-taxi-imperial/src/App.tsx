@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { AuthProvider, useAuth } from '@/features/auth/AuthContext';
+import { ThemeProvider } from '@/features/theme/ThemeContext';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import ChangePasswordPage from '@/features/auth/pages/ChangePasswordPage';
 import AppLayout from '@/components/layout/AppLayout';
@@ -28,8 +29,9 @@ function RequireApprover({ children }: { children: ReactNode }) {
 
 export default function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route
@@ -64,5 +66,6 @@ export default function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
   );
 }

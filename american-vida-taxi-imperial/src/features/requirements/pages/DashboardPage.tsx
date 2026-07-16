@@ -28,7 +28,11 @@ export default function DashboardPage() {
       .catch((e: Error) => setError(e.message));
     listRequirements()
       .then((reqs) =>
-        setRequirements([...reqs].sort((a, b) => a.createdAt.localeCompare(b.createdAt))),
+        setRequirements(
+          reqs
+            .filter((r) => !CLOSED.has(r.status))
+            .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+        ),
       )
       .catch(() => setRequirements([]));
   }, []);

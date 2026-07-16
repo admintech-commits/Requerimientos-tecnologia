@@ -32,9 +32,21 @@ export function createApp() {
     '/api/uploads',
     express.static(UPLOADS_DIR, {
       setHeaders(res, filePath) {
-        const filename = path.basename(filePath);
-        res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(filename)}"`);
-        res.setHeader('X-Content-Type-Options', 'nosniff');
+        // El nombre almacenado tiene prefijo timestamp: "1234567890-nombre.pdf"
+        // Se lo quitamos para que el usuario vea el nombre original.
+        const stored = path.basename(filePath);
+        const displayName = stored.replace(/^\d+-/, '');
+
+        // filename= solo acepta ASCII plano sin codificar; para nombres con
+        // caracteres especiales se usa el parámetro filename* (RFC 5987).
+        const asciiSafe = displayName.replace(/[^\x20-\x7e]/g, '_');
+        const encoded = encodeURIComponent(displayName);
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename="${asciiSafe}"; filename*=UTF-8''${encoded}`,
+        );
+        // Evita que nginx u otro proxy comprima el body (gzip rompería binarios).
+        res.setHeader('Cache-Control', 'no-transform, private');
       },
     }),
   );

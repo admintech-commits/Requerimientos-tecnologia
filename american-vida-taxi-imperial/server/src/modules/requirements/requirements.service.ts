@@ -1,4 +1,6 @@
 import { HttpError } from '../../lib/httpError.js';
+import { sendAssignmentEmail } from '../../lib/mailer.js';
+import { config } from '../../config.js';
 import { db } from '../../db/connection.js';
 import {
   AREAS,
@@ -188,11 +190,24 @@ export function assignRequirement(id: number, input: AssignInput, actor: User): 
     assigneeName = `${externalName} (externo)`;
   } else if (input.userId !== null && input.userId !== undefined) {
     const assignee = db
-      .prepare('SELECT id, name FROM users WHERE id = ?')
-      .get(input.userId) as { id: number; name: string } | undefined;
+      .prepare('SELECT id, name, email FROM users WHERE id = ?')
+      .get(input.userId) as { id: number; name: string; email: string } | undefined;
     if (!assignee) throw new HttpError(400, 'El usuario asignado no existe');
     userId = assignee.id;
     assigneeName = assignee.name;
+
+    // Enviar correo de notificación al responsable asignado (no bloquea la respuesta)
+    const appUrl = process.env.APP_URL ?? 'http://localhost:5173';
+    sendAssignmentEmail({
+      toEmail: assignee.email,
+      toName: assignee.name,
+      requirementId: id,
+      requirementTitle: requirement.title,
+      assignedBy: actor.name,
+      appUrl,
+    }).catch((err: unknown) => {
+      console.error('[mailer] Error al enviar correo de asignación:', err);
+    });
   }
 
   repo.updateAssignee(id, userId, externalName);

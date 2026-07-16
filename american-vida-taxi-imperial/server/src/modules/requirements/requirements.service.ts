@@ -1,6 +1,5 @@
 import { HttpError } from '../../lib/httpError.js';
 import { sendAssignmentEmail } from '../../lib/mailer.js';
-import { config } from '../../config.js';
 import { db } from '../../db/connection.js';
 import {
   AREAS,
